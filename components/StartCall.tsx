@@ -3,9 +3,28 @@ import { AnimatePresence, motion } from "motion/react";
 import { Button } from "./ui/button";
 import { Phone } from "lucide-react";
 import { toast } from "sonner";
+import { useInterview } from "@/context/InterviewContext";
 
 export default function StartCall({ configId, accessToken }: { configId?: string, accessToken: string }) {
   const { status, connect } = useVoice();
+  const { state } = useInterview();
+
+  const handleConnect = () => {
+    const questions = state.questions.map((q, i) => `${i + 1}. ${q}`).join('\n');
+    const systemPrompt = `You are a professional interviewer. Your goal is to conduct a structured interview with the user. Ask the following questions one by one. Wait for the user to finish their answer before moving to the next question. Be encouraging and professional.\n\nHere are the questions:\n${questions}`;
+
+    connect({
+      auth: { type: "accessToken", value: accessToken },
+      configId,
+      sessionSettings: {
+        systemPrompt,
+      },
+    })
+      .catch((e) => {
+        toast.error("Unable to start call");
+        console.error(e);
+      });
+  };
 
   return (
     <AnimatePresence>
@@ -31,19 +50,7 @@ export default function StartCall({ configId, accessToken }: { configId?: string
             >
               <Button
                 className={"z-50 flex items-center gap-1.5 rounded-full"}
-                onClick={() => {
-                  connect({ 
-                    auth: { type: "accessToken", value: accessToken },
-                    configId, 
-                    // additional options can be added here
-                    // like resumedChatGroupId and sessionSettings
-                  })
-                    .then(() => {})
-                    .catch(() => {
-                      toast.error("Unable to start call");
-                    })
-                    .finally(() => {});
-                }}
+                onClick={handleConnect}
               >
                 <span>
                   <Phone

@@ -10,13 +10,10 @@ export default function Expressions({
 }: {
   values: Record<string, number>;
 }) {
-  const top3 = R.pipe(
-    values,
-    R.entries(),
-    R.sortBy(R.pathOr([1], 0)),
-    R.reverse(),
-    R.take(3)
-  );
+  // A simple, standard JavaScript way to sort and get the top 3 expressions
+  const top3 = Object.entries(values)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 3);
 
   return (
     <div
@@ -30,7 +27,7 @@ export default function Expressions({
             className={"flex items-center justify-between gap-1 pb-1"}
           >
             <div className={"font-medium truncate tracking-tight"}>
-              {expressionLabels[key]}
+              {expressionLabels[key] || key}
             </div>
             <div className={"tabular-nums opacity-50 tracking-tight"}>{value.toFixed(2)}</div>
           </div>
@@ -40,7 +37,7 @@ export default function Expressions({
               {
                 "--bg": isExpressionColor(key)
                   ? expressionColors[key]
-                  : "var(--bg)",
+                  : "var(--foreground)",
               } as CSSProperties
             }
           >

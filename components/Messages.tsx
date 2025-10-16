@@ -4,12 +4,14 @@ import { useVoice } from "@humeai/voice-react";
 import Expressions from "./Expressions";
 import { AnimatePresence, motion } from "motion/react";
 import { ComponentRef, forwardRef } from "react";
+import { useInterview } from "@/context/InterviewContext";
 
 const Messages = forwardRef<
   ComponentRef<typeof motion.div>,
   Record<never, never>
 >(function Messages(_, ref) {
   const { messages } = useVoice();
+  const { state } = useInterview(); // Get the facial scores from context
 
   return (
     <motion.div
@@ -26,54 +28,41 @@ const Messages = forwardRef<
               msg.type === "user_message" ||
               msg.type === "assistant_message"
             ) {
+              const role = msg.message.role === "assistant" ? "Interviewer" : "User";
+              const prosodyScores = msg.models.prosody?.scores;
+              const facialScores = state.facialScores;
+
               return (
                 <motion.div
                   key={msg.type + index}
                   className={cn(
-                    "w-[80%]",
-                    "bg-card",
-                    "border border-border rounded-xl",
-                    msg.type === "user_message" ? "ml-auto" : ""
+                    "w-[80%]", "bg-card", "border border-border rounded-xl",
+                    role === "User" ? "ml-auto" : ""
                   )}
-                  initial={{
-                    opacity: 0,
-                    y: 10,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  exit={{
-                    opacity: 0,
-                    y: 0,
-                  }}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 0 }}
                 >
                   <div className={"flex items-center justify-between pt-4 px-3"}>
-                    <div
-                      className={cn(
-                        "text-xs capitalize font-medium leading-none opacity-50 tracking-tight"
-                      )}
-                    >
-                      {msg.message.role}
+                    <div className={cn("text-xs capitalize font-medium leading-none opacity-50 tracking-tight")}>
+                      {role}
                     </div>
-                    <div
-                      className={cn(
-                        "text-xs capitalize font-medium leading-none opacity-50 tracking-tight"
-                      )}
-                    >
-                      {msg.receivedAt.toLocaleTimeString(undefined, {
-                        hour: "numeric",
-                        minute: "2-digit",
-                        second: undefined,
-                      })}
+                    <div className={cn("text-xs capitalize font-medium leading-none opacity-50 tracking-tight")}>
+                      {msg.receivedAt.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}
                     </div>
                   </div>
+
                   <div className={"pb-3 px-3"}>{msg.message.content}</div>
-                  <Expressions values={{ ...msg.models.prosody?.scores }} />
+
+                  {prosodyScores && (
+                    <div>
+                      <p className="px-3 pt-2 text-xs font-medium text-muted-foreground">Vocal Expressions</p>
+                      <Expressions values={prosodyScores} />
+                    </div>
+                  )}
                 </motion.div>
               );
             }
-
             return null;
           })}
         </AnimatePresence>

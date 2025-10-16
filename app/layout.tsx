@@ -6,10 +6,11 @@ import { Nav } from "@/components/Nav";
 import { cn } from "@/utils";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { InterviewProvider } from "@/context/InterviewContext"; // Import the provider
 
 export const metadata: Metadata = {
-  title: "Hume AI - EVI - Next.js Starter",
-  description: "A Next.js starter using Hume AI's Empathic Voice Interface",
+  title: "interview-coach",
+  description: "interview-coach description",
 };
 
 export default function RootLayout({
@@ -26,16 +27,18 @@ export default function RootLayout({
           "flex flex-col min-h-screen"
         )}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Nav />
-          {children}
-          <Toaster position="top-center" richColors={true} />
-        </ThemeProvider>
+        <InterviewProvider> {/* Add the provider */}
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Nav />
+            {children}
+            <Toaster position="top-center" richColors={true} />
+          </ThemeProvider>
+        </InterviewProvider>
       </body>
     </html>
   );
