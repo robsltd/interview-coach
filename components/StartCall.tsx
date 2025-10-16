@@ -10,8 +10,8 @@ export default function StartCall({ configId, accessToken }: { configId?: string
   const { state } = useInterview();
 
   const handleConnect = () => {
-    const questions = state.questions.map((q, i) => `${i + 1}. ${q}`).join('\n');
-    const systemPrompt = `You are a professional interviewer. Your goal is to conduct a structured interview with the user. Ask the following questions one by one. Wait for the user to finish their answer before moving to the next question. Be encouraging and professional.\n\nHere are the questions:\n${questions}`;
+    const questions = state.questions.map((q, i) => `${i + 1}. ${q}`).join('\\n');
+    const systemPrompt = `You are a professional interviewer. Your goal is to conduct a structured interview with the user. Ask the following questions one by one. Wait for the user to finish their answer before moving to the next question. Be encouraging and professional.\\n\\nHere are the questions:\\n${questions}`;
 
     connect({
       auth: { type: "accessToken", value: accessToken },

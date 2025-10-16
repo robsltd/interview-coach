@@ -1,23 +1,21 @@
 "use client";
 import { useVoice } from "@humeai/voice-react";
 import { Button } from "./ui/button";
-import { Mic, MicOff, Phone } from "lucide-react";
+import { Mic, MicOff, Phone, RotateCcw } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { Toggle } from "./ui/toggle";
 import MicFFT from "./MicFFT";
 import { cn } from "@/utils";
 
 export default function Controls() {
-  const { disconnect, status, isMuted, unmute, mute, micFft } = useVoice();
+  const { disconnect, status, isMuted, unmute, mute, micFft, sendUserInput } = useVoice();
 
   return (
     <div
-      className={
-        cn(
-          "fixed bottom-0 left-0 w-full p-4 pb-6 flex items-center justify-center",
-          "bg-gradient-to-t from-card via-card/90 to-card/0",
-        )
-      }
+      className={cn(
+        "fixed bottom-0 left-0 w-full p-4 pb-6 flex items-center justify-center",
+        "bg-gradient-to-t from-card via-card/90 to-card/0"
+      )}
     >
       <AnimatePresence>
         {status.value === "connected" ? (
@@ -73,7 +71,7 @@ export default function Controls() {
                   strokeWidth={0}
                 />
               </span>
-              <span>End Call</span>
+              <span>End Interview</span>
             </Button>
           </motion.div>
         ) : null}

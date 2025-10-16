@@ -66,7 +66,6 @@ This document outlines the phased development plan for the AI Interview Coach ap
 * **Epic: Feedback UI & Controls**  
   * **Story:** As a user, after I finish an answer, a small, dismissible "Hint" or "View Feedback" button appears near my message bubble.  
   * **Story:** As a user, when I click the feedback button, I see the generated feedback from the Observer AI in a popover or expandable section.  
-  * **Story:** As a developer, I will add a "Retry Question" button to the Controls.tsx component. When clicked, it instructs the state manager to have the EVI re-ask the current question.  
   * **Story:** As a developer, the "End Interview" button now navigates the user to a placeholder "Report" page.
 
 **Definition of Done:**

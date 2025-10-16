@@ -5,13 +5,16 @@ import Expressions from "./Expressions";
 import { AnimatePresence, motion } from "motion/react";
 import { ComponentRef, forwardRef } from "react";
 import { useInterview } from "@/context/InterviewContext";
+import { Button } from "./ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Lightbulb } from "lucide-react";
 
 const Messages = forwardRef<
   ComponentRef<typeof motion.div>,
   Record<never, never>
 >(function Messages(_, ref) {
   const { messages } = useVoice();
-  const { state } = useInterview(); // Get the facial scores from context
+  const { state } = useInterview();
 
   return (
     <motion.div
@@ -30,7 +33,7 @@ const Messages = forwardRef<
             ) {
               const role = msg.message.role === "assistant" ? "Interviewer" : "User";
               const prosodyScores = msg.models.prosody?.scores;
-              const facialScores = state.facialScores;
+              const feedback = state.feedback[msg.message.id];
 
               return (
                 <motion.div
@@ -58,6 +61,21 @@ const Messages = forwardRef<
                     <div>
                       <p className="px-3 pt-2 text-xs font-medium text-muted-foreground">Vocal Expressions</p>
                       <Expressions values={prosodyScores} />
+                    </div>
+                  )}
+
+                  {role === "User" && feedback && (
+                    <div className="px-3 pb-3">
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button variant="outline" size="sm" className="rounded-full">
+                            <Lightbulb className="size-4 mr-2" /> View Feedback
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent>
+                          <p className="text-sm">{feedback}</p>
+                        </PopoverContent>
+                      </Popover>
                     </div>
                   )}
                 </motion.div>
